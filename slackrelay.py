@@ -129,7 +129,7 @@ class Bot:
     err_exit(3, "Unable to find bot identity")
 
 class Rule:
-  def __init__(self, name, fTeam, fChannel, backend='echo', bURL=None, bChannel=None):
+  def __init__(self, name, fTeam, fChannel, backend='echo', bURL=None):
     self.name=name
     self.fTeam=fTeam
     self.fChannel=fChannel
@@ -137,7 +137,6 @@ class Rule:
     # some URLs had <> added around them
     bURL = bURL.strip("<>")
     self.bURL=bURL
-    self.bChannel=bChannel
 
   def match(self, fTeam, fChannel):
     if self.fTeam != fTeam:
@@ -155,7 +154,6 @@ class Rule:
       'frontend-channel' : self.fChannel,
       'backend' : self.backend,
       'backend-url' : self.bURL,
-      'backend-channel' : self.bChannel
     }
 
   @staticmethod
@@ -166,7 +164,6 @@ class Rule:
       d.get('frontend-channel'),
       d.get('backend'),
       d.get('backend-url'),
-      d.get('backend-channel')
     )
 
 class Config:
@@ -179,7 +176,7 @@ class Config:
     if not rule.name or not rule.fTeam or not rule.fChannel:
       return False
     if rule.backend == 'slack-iwh':
-      if not rule.bURL or not rule.bChannel:
+      if not rule.bURL:
         return False
     if rule.name in self.ruleNames:
       return False
@@ -374,7 +371,6 @@ def main():
             payload = {
               "text": text,
               "username": user.fullName,
-              "channel": r.bChannel,
               "icon_url": user.image
             }
             req = requests.post(r.bURL, json.dumps(payload), headers={'content-type': 'application/json'})

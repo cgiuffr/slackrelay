@@ -1,7 +1,7 @@
 slackrelay
 -------------
 
-slackrelay is a Slack bot which relays every message from a Slack channel to one or more predetermined backends, according to a set of preconfigured rules persisted in a config file. A key goal is to enable channel mirroring across different Slack teams.
+slackrelay is a Slack bot which relays every message from a Slack channel to one or more predetermined backends, according to a set of preconfigured rules persisted in a config file. A key goal is to enable channel mirroring across different Slack teams. Relaying messages from and to both public and private channels are supported.
 
 Currently, two backends are supported (but others, e.g., **irc**, can be easily integrated):
 * **echo**: simply echoes the original message in the same Slack channel (for testing purposes).
@@ -36,12 +36,12 @@ Workflow
 -------
 
 1. `git clone git@github.com:cgiuffr/slackrelay.git`
-2. Add a bot user to your Slack team and note down its `$bot_user_token`
-3. Add an incoming web hook to the Slack channel you want to relay messages to (slack-iwh backend)
-4. Add the bot user to the channel you want to relay messages from
-5. `python slackrelay.py $bot_user_token`
+2. Add a bot user to your Slack team (at https://slack.com/apps/A0F7YS25R-bots) and note down its `$bot_user_token`
+3. Add the bot user by inviting it to the channel you want to relay messages from
+4. Run `python slackrelay.py $bot_user_token` on your server to start listening for messages on the channel through the bot
+5. Add an incoming web hook to your channel (at https://slack.com/apps/A0F7XDUAZ-incoming-webhooks) and share the incoming web hook URL with the other team so they can relay messages to your channel
 6. Type `@slackrelay help` to interact with the bot and add rules to relay messages
-7. When mirroring a channel across teams (slack-iwh backend), repeat the (symmetric) procedure for the other team
+7. When mirroring a channel across teams, repeat the (symmetric) procedure for the other team
 
 Usage example
 -------------
@@ -52,7 +52,7 @@ Usage example
 @slackrelay rule-add { "backend": "echo", "name": "echo-test" }
 @slackrelay rule-list
 Test message1
-@slackrelay rule-add { "backend": "slack-iwh", "backend-channel": "#dest", "backend-url": "https://hooks.slack.com/services/dest/incoming-web-hook/url", "name": "dest-relay" }
+@slackrelay rule-add { "backend": "slack-iwh", "backend-url": "https://hooks.slack.com/services/dest/incoming-web-hook-url/other-team", "name": "dest-relay" }
 @slackrelay rule-list
 Test message2
 @slackrelay rule-del echo-test
