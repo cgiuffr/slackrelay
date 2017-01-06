@@ -197,13 +197,15 @@ class Config:
   def handleCommand(self, team, channel, cmd, prefix):
     ret = False
     cmd = cmd[len(prefix):]
-    syntax = "Syntax: %s [rule-add json] [rule-del name] [rule-list] [help]" % prefix
+    syntax = "Syntax: %s [rule-add json] [rule-del name] [rule-del-all] [rule-list] [help]" % prefix
     try:
       if cmd.startswith(' rule-add '):
-        args = cmd[10:]
+        args = cmd[10:].strip()
         ruleDict = json.loads(args)
         ruleDict['frontend-team'] = team.name
         ruleDict['frontend-channel'] = channel.name
+        if ruleDict['backend-url'][0] == "<":
+          ruleDict['backend-url'] = ruleDict['backend-url'][1:-1]
         rule = Rule.fromDict(ruleDict)
         logging.debug("rule-add: %s" % rule.toDict())
         ret = self.addRule(rule)
@@ -214,6 +216,10 @@ class Config:
         ret = self.delRule(args.strip())
         if ret:
           self.store()
+      elif cmd.startswith(' rule-del-all'):
+        self.rules = []
+        self.store()
+        ret = True
       elif cmd.startswith(' rule-list'):
         return [r for r in self.getRuleSet() if r['frontend-team'] == team.name and r['frontend-channel'] == channel.name]
       elif cmd.startswith(' help'):
