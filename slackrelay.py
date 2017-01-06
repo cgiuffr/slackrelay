@@ -214,8 +214,6 @@ class Config:
         ruleDict = json.loads(args)
         ruleDict['frontend-team'] = team.name
         ruleDict['frontend-channel'] = channel.name
-        if ruleDict['backend-url'][0] == "<":
-          ruleDict['backend-url'] = ruleDict['backend-url'][1:-1]
         rule = Rule.fromDict(ruleDict)
         logging.debug("rule-add: %s" % rule.toDict())
         ret = self.addRule(rule)
