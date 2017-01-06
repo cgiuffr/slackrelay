@@ -11,9 +11,9 @@ Usage
 -----
 
 ```
-slackrelay.py [-h] [-l {debug,info,warning,error}] [-b BOT]
-                        [-f CONFIG_FILE] [-s SLEEP_MS] [-v]
-                        bot_user_token
+slackrelay.py [-h] [-l {debug,info,warning,error}] [-b BOT] [-z]
+                     [-f CONFIG_FILE] [-s SLEEP_MS] [-v]
+                     bot_user_token
 
 Slack Relay Bot
 
@@ -25,6 +25,7 @@ optional arguments:
   -l {debug,info,warning,error}, --log {debug,info,warning,error}
                         Log level
   -b BOT, --bot BOT     Bot name
+  -z, --slave           Set this instance as a slave with private rules
   -f CONFIG_FILE, --config-file CONFIG_FILE
                         Configuration file
   -s SLEEP_MS, --sleep-ms SLEEP_MS

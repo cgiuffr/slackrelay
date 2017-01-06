@@ -274,6 +274,10 @@ def parse_args():
     default="slackrelay",
     help="Bot name")
 
+  parser.add_argument("-z", "--slave", action="store_true",
+    default=False,
+    help="Set this instance as a slave with private rules")
+
   parser.add_argument("-f", "--config-file",
     default="slackrelay.json",
     help="Configuration file")
@@ -330,8 +334,11 @@ def main():
 
       # Handle @slackrelay commands
       if not 'subtype' in part and part['text'].startswith(bot.commandPrefix):
-        ret = config.handleCommand(team, channel, part['text'], bot.commandPrefix)
-        sc.api_call("chat.postMessage", channel=part['channel'], text=ret, username=bot.name, icon_url=bot.image)
+        if args.slave:
+          logging.warning('Skipping command "%s" (slave mode)' % part['text'])
+        else:
+          ret = config.handleCommand(team, channel, part['text'], bot.commandPrefix)
+          sc.api_call("chat.postMessage", channel=part['channel'], text=ret, username=bot.name, icon_url=bot.image)
         continue
 
       # See if we have any matching rules
