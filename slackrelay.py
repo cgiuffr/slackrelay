@@ -76,8 +76,21 @@ class Channel:
     if tcid in Channel.cache:
       return Channel.cache[tcid]
     channelInfo = sc.api_call('channels.info', channel=id)
+    # if the lookup failed, try it again for a private channel
+    isprivate = False
+    if channelInfo['ok'] == False:
+      channelInfo = sc.api_call('groups.info', channel=id)
+      # hack the group info compatible to channel info, this might break silently
+      if channelInfo['ok'] == True:
+        channelInfo['channel'] = channelInfo['group']
+        isprivate = True
     logging.debug("Channel: %s" % channelInfo)
-    return Channel(tcid, id, "#%s" % channelInfo['channel']['name'])
+    channelname = ""
+    if isprivate:
+      channelname = channelInfo['channel']['name']
+    else:
+      channelname = "#" + channelInfo['channel']['name']
+    return Channel(tcid, id, channelname)
 
 class User:
   cache = LimitedSizeDict()
@@ -110,22 +123,19 @@ class Bot:
   def lookup(sc, team, name):
     users = sc.api_call("users.list")
     for u in users['members']:
-    	if 'name' in u and u['name'] == name:
+      if 'name' in u and u['name'] == name:
           user = User.lookup(sc, team, u['id'])
           return Bot(user.id, user.name, user.image)
     err_exit(3, "Unable to find bot identity")
 
 class Rule:
   def __init__(self, name, fTeam, fChannel, backend='echo', bURL=None, bChannel=None):
-    if not fChannel.startswith('#'):
-      fChannel = "#%s" % fChannel
-    if bChannel and not bChannel.startswith('#'):
-      bChannel = "#%s" % bChannel
-
     self.name=name
     self.fTeam=fTeam
     self.fChannel=fChannel
     self.backend=backend
+    # some URLs had <> added around them
+    bURL = bURL.strip("<>")
     self.bURL=bURL
     self.bChannel=bChannel
 
