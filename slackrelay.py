@@ -135,7 +135,8 @@ class Rule:
     self.fChannel=fChannel
     self.backend=backend
     # some URLs had <> added around them
-    bURL = bURL.strip("<>")
+    if bURL:
+      bURL = bURL.strip("<>")
     self.bURL=bURL
 
   def match(self, fTeam, fChannel):
