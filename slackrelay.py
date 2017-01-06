@@ -23,6 +23,7 @@ import jason
 from time import sleep
 from collections import OrderedDict
 import os
+import re
 import traceback
 import argparse
 import json
@@ -317,6 +318,7 @@ def main():
   logging.warning("Connected bot: %s (<@%s>)", bot.name, bot.id)
 
   # Process bot events
+  usernamePattern = re.compile("<@[^>]+>")
   while True:
     response = sc.rtm_read()
     for part in response:
@@ -368,7 +370,12 @@ def main():
       if not user:
         user = User.lookup(sc, team, part['user'])
         text = part['text']
-      
+
+      for p in usernamePattern.findall(text):
+        src = p
+        username = p[2:-1]
+        textUser = User.lookup(sc, team, username)
+        text = text.replace(src, "@%s" % textUser.name, 1)
       logging.info("[%s/%s] %s: %s" % (team.name, channel.name, user.fullName, text))
 
       # Pass event to the backend for each matching rule
