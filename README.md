@@ -1,7 +1,7 @@
 slackrelay
 -------------
 
-slackrelay is a Slack bot which relays every message from a Slack channel to one or more predetermined backends, according to a set of preconfigured rules persisted in a config file. A key goal is to enable channel mirroring across different Slack teams. Relaying messages from and to both public and private channels are supported.
+slackrelay is a Slack bot which relays every message from a Slack channel to one or more predetermined backends, according to a set of preconfigured rules persisted in a config file. A key goal is to enable channel mirroring across different Slack teams. Relaying messages from and to both public and private channels is supported.
 
 Currently, two backends are supported (but others, e.g., **irc**, can be easily integrated):
 * **echo**: simply echoes the original message in the same Slack channel (for testing purposes).
