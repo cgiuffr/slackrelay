@@ -364,6 +364,8 @@ def main():
         elif mtype == 'message_changed':
           user = User.lookup(sc, team, part['message']['user'])
           text = '[EDITED] %s -> %s' % (part['previous_message']['text'], part['message']['text'])
+        elif mtype == 'me_message':
+          part['text'] = "/me %s" % part['text']
         else:
           logging.warning("Unhandled message, skipping")
           continue
