@@ -277,7 +277,7 @@ def parse_args():
 
   parser.add_argument("-z", "--slave", action="store_true",
     default=False,
-    help="Set this instance as a slave with private rules")
+    help="Set this instance as a slave with private configuration")
 
   parser.add_argument("-f", "--config-file",
     default="slackrelay.json",

@@ -25,7 +25,8 @@ optional arguments:
   -l {debug,info,warning,error}, --log {debug,info,warning,error}
                         Log level
   -b BOT, --bot BOT     Bot name
-  -z, --slave           Set this instance as a slave with private rules
+  -z, --slave           Set this instance as a slave with private
+                        configuration
   -f CONFIG_FILE, --config-file CONFIG_FILE
                         Configuration file
   -s SLEEP_MS, --sleep-ms SLEEP_MS
@@ -38,8 +39,8 @@ Workflow
 
 1. `git clone git@github.com:cgiuffr/slackrelay.git`
 2. Add a bot user to your Slack team (at https://slack.com/apps/A0F7YS25R-bots) and note down its `$bot_user_token`
-3. Add the bot user by inviting it to the channel you want to relay messages from
-4. Run `python slackrelay.py $bot_user_token` on your server to start listening for messages on the channel through the bot
+3. Invite the bot user to the channel you want to relay messages from
+4. Run `python slackrelay.py $bot_user_token` on a server to listen for messages from the channel through the bot
 5. Add an incoming web hook to your channel (at https://slack.com/apps/A0F7XDUAZ-incoming-webhooks) and share the incoming web hook URL with the other team so they can relay messages to your channel
 6. Type `@slackrelay help` to interact with the bot and add rules to relay messages
 7. When mirroring a channel across teams, repeat the (symmetric) procedure for the other team
@@ -61,3 +62,15 @@ Test message2
 Test message3
 ```
 
+Contribute
+----------
+
+If you feel like contributing to slackrelay, here are some ideas:
+* Implement a **slack-p2p** backend, where bots communicate directly over a custom protocol to relay messages. Compared to **slack-iwh**, this would eliminate the need for incoming web hooks and make it easier to implement advanced Slack features.
+* Implement an **irc** or any other useful (e.g., **hipchat**) backend.
+* Implement support for global bot commands processed by all the bots listening on the same shared channel.
+* Implement a `@slackrelay bot-list` global bot command to list all the running bots.
+* Implement a `@slackrelay user-list` global bot command to list all the users.
+* Improve support for /me messages.
+* Improve support for deleted and edited messages.
+* Implement support for custom emojis or other advanced features.
