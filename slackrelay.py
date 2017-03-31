@@ -296,6 +296,15 @@ def parse_args():
 
   return args
 
+def connect_to_bot(bot_user_token, bot_name):
+  sc = SlackClient(bot_user_token)
+  if sc.rtm_connect() != True:
+    err_exit(1, 'Connection Failed!')
+  team = Team.lookup(sc)
+  bot = Bot.lookup(sc, team, bot_name)
+  logging.warning("Connected bot: %s (<@%s>)", bot.name, bot.id)
+  return (bot,team,sc)
+
 def main():
   # Parse command-line arguments
   args = parse_args()
@@ -309,18 +318,17 @@ def main():
   config = Config(args.config_file)
   config.load()
 
-  # Connect bot
-  sc = SlackClient(args.bot_user_token)
-  if sc.rtm_connect() != True:
-    err_exit(1, 'Connection Failed!')
-  team = Team.lookup(sc)
-  bot = Bot.lookup(sc, team, args.bot)
-  logging.warning("Connected bot: %s (<@%s>)", bot.name, bot.id)
+  (bot,team,sc) = connect_to_bot(args.bot_user_token, args.bot)
 
   # Process bot events
   usernamePattern = re.compile("<@[^>]+>")
   while True:
-    response = sc.rtm_read()
+    try:
+      response = sc.rtm_read()
+    except WebSocketTimeoutException as e:
+      logging.warning("rtm_read failed: %s" % extract_err_message(e))
+      logging.warning("Reconnecting to bot..")
+      (bot,team,sc) = connect_to_bot(args.bot_user_token, args.bot)
     for part in response:
       # Skip nonmessages and bot messages
       if part['type'] != 'message':
