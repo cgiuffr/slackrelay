@@ -302,7 +302,7 @@ def main():
 
   # Initialize logging
   logLevel = getattr(logging, args.log.upper(), None)
-  logging.basicConfig(format='[%(levelname)s] %(message)s', level=logLevel)
+  logging.basicConfig(format='[%(asctime)-15s] [%(levelname)s] %(message)s', level=logLevel)
   logging.warning("Using CLI argments: %s" % vars(args))
 
   # Load rules from config file
