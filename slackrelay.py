@@ -30,6 +30,9 @@ import json
 import requests
 import logging
 
+from websocket._exceptions import WebSocketConnectionClosedException, WebSocketTimeoutException
+
+
 class LimitedSizeDict(OrderedDict):
   def __init__(self, *args, **kwds):
     self.size_limit = kwds.pop("size_limit", 100)
@@ -325,7 +328,7 @@ def main():
   while True:
     try:
       response = sc.rtm_read()
-    except WebSocketTimeoutException as e:
+    except (WebSocketTimeoutException, WebSocketConnectionClosedException) as e:
       logging.warning("rtm_read failed: %s" % extract_err_message(e))
       logging.warning("Reconnecting to bot..")
       (bot,team,sc) = connect_to_bot(args.bot_user_token, args.bot)
