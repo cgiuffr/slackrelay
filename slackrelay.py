@@ -334,7 +334,9 @@ def main():
       (bot,team,sc) = connect_to_bot(args.bot_user_token, args.bot)
     for part in response:
       # Skip nonmessages and bot messages
-      if part['type'] != 'message':
+      if 'type' not in part:
+        logging.warning("Type not in part: %s" % str(part))
+      if 'type' in part and part['type'] != 'message':
         continue
       if 'bot_id' in part:
         continue
