@@ -286,6 +286,9 @@ def parse_args():
     default="slackrelay.json",
     help="Configuration file")
 
+  parser.add_argument("-e", "--emoji-to-confirm",
+    help="Emoji that relayed messages will be updated with (reacted to) to show confirmation to humans, e.g. thumbsup, white_check_mark, heavy_check_mark")
+
   parser.add_argument("-s", "--sleep-ms",
     default=100,
     help="Polling interval (ms)")
@@ -307,6 +310,19 @@ def connect_to_bot(bot_user_token, bot_name):
   bot = Bot.lookup(sc, team, bot_name)
   logging.warning("Connected bot: %s (<@%s>)", bot.name, bot.id)
   return (bot,team,sc)
+
+def emoji_add(channel, timestamp, emoji, sc):
+    try:
+        update_req = sc.api_call('reactions.add', channel=channel, timestamp=timestamp, name=emoji)
+        logging.debug("Posting reaction " + str(update_req))
+        update_ok = update_req['ok']
+        if not update_ok:
+            logging.error("Adding reaction failed")
+        else:
+            logging.debug("Adding reaction OK " + emoji)
+    except Exception as e:
+        logging.error("Adding reaction failed with exception: " + str(e))
+        print(traceback.format_exc())
 
 def main():
   # Parse command-line arguments
@@ -415,6 +431,11 @@ def main():
           req = False
         if not req:
           logging.error("Error processing rule %s" % r.name)
+        else:
+          if args.emoji_to_confirm is not None:
+             emoji_add(part['channel'], part['ts'], args.emoji_to_confirm, sc)
+          else:
+             logging.debug("No emoji response configured")
     sleep(float(args.sleep_ms)/1000)
 
 if __name__ == "__main__":
