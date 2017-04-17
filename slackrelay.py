@@ -414,6 +414,7 @@ def main():
       # Pass event to the backend for each matching rule
       for r in matchingRules:
         logging.debug("Processing rule: %s" % r.name)
+        req = False
         try:
           if r.backend == "slack-iwh":
             payload = {
@@ -429,13 +430,13 @@ def main():
         except Exception:
           print(traceback.format_exc())
           req = False
-        if not req:
-          logging.error("Error processing rule %s" % r.name)
-        else:
+        if req == True:
           if args.emoji_to_confirm is not None:
              emoji_add(part['channel'], part['ts'], args.emoji_to_confirm, sc)
           else:
              logging.debug("No emoji response configured")
+        else:
+          logging.error("Error processing rule %s" % r.name)
     sleep(float(args.sleep_ms)/1000)
 
 if __name__ == "__main__":
