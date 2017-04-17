@@ -336,6 +336,8 @@ def main():
       # Skip nonmessages and bot messages
       if 'type' not in part:
         logging.warning("Type not in part: %s" % str(part))
+        if len(part) == 0:
+          continue
       if 'type' in part and part['type'] != 'message':
         continue
       if 'bot_id' in part:
