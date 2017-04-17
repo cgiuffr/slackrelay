@@ -12,7 +12,7 @@ Usage
 
 ```
 slackrelay.py [-h] [-l {debug,info,warning,error}] [-b BOT] [-z]
-                     [-f CONFIG_FILE] [-s SLEEP_MS] [-v]
+                     [-f CONFIG_FILE] [-e EMOJI_TO_CONFIRM] [-s SLEEP_MS] [-v]
                      bot_user_token
 
 Slack Relay Bot
@@ -29,6 +29,10 @@ optional arguments:
                         configuration
   -f CONFIG_FILE, --config-file CONFIG_FILE
                         Configuration file
+  -e EMOJI_TO_CONFIRM, --emoji-to-confirm EMOJI_TO_CONFIRM
+                        Emoji that relayed messages will be updated with
+                        (reacted to) to show confirmation to humans, e.g.
+                        thumbsup, white_check_mark, heavy_check_mark
   -s SLEEP_MS, --sleep-ms SLEEP_MS
                         Polling interval (ms)
   -v, --version         show program's version number and exit
