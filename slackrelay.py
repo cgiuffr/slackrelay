@@ -345,7 +345,11 @@ def main():
     try:
       response = sc.rtm_read()
     except (WebSocketTimeoutException, WebSocketConnectionClosedException) as e:
-      logging.warning("rtm_read failed: %s" % extract_err_message(e))
+      logging.warning("rtm_read failed: %s" % str(e))
+      logging.warning("Reconnecting to bot..")
+      (bot,team,sc) = connect_to_bot(args.bot_user_token, args.bot)
+    except Exception as e:
+      logging.warning("rtm_read failed (unknown exception): %s" % str(e))
       logging.warning("Reconnecting to bot..")
       (bot,team,sc) = connect_to_bot(args.bot_user_token, args.bot)
     for part in response:
